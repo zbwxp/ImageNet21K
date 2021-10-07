@@ -30,7 +30,7 @@ parser.add_argument('--model_name', default='tresnet_m')
 parser.add_argument('--model_path', default='./tresnet_m.pth', type=str)
 parser.add_argument('--num_workers', default=8, type=int)
 parser.add_argument('--image_size', default=224, type=int)
-parser.add_argument('--num_classes', default=11221, type=int)
+parser.add_argument('--num_classes', default=10450, type=int)
 parser.add_argument('--batch_size', default=64, type=int)
 parser.add_argument('--epochs', default=80, type=int)
 parser.add_argument('--weight_decay', default=1e-4, type=float)
@@ -85,6 +85,8 @@ def train_21k(model, train_loader, val_loader, optimizer, semantic_softmax_proce
         print_at_master("\nEpoch {}".format(epoch))
         epoch_start_time = time.time()
         for i, (input, target) in enumerate(train_loader):
+            if i % 100 == 0:
+                print(i,"th iteration")
             with autocast():  # mixed precision
                 output = model(input)
                 loss = loss_fn(output, target) # note - loss also in fp16
