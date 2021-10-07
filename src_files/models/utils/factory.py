@@ -13,8 +13,8 @@ def load_model_weights(model, model_path):
         if 'num_batches_tracked' in key:
             continue
         p = model.state_dict()[key]
-        if key in state['state_dict']:
-            ip = state['state_dict'][key]
+        if key in state:
+            ip = state[key]
             if p.shape == ip.shape:
                 p.data.copy_(ip.data)  # Copy the data of parameters
             else:
@@ -73,7 +73,7 @@ def create_model(args):
     else:
         print("model: {} not found !!".format(args.model_name))
         exit(-1)
-
+    print(model)
     if args.model_path and args.model_path != '':  # make sure to load pretrained ImageNet-1K model
         model = load_model_weights(model, args.model_path)
 
