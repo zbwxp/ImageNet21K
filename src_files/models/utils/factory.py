@@ -4,6 +4,7 @@ import timm
 from ..ofa.model_zoo import ofa_flops_595m_s
 from ..tresnet import TResnetM, TResnetL
 from src_files.helper_functions.distributed import print_at_master
+from src_files.models.gvt import *
 
 
 def load_model_weights(model, model_path):
@@ -39,7 +40,7 @@ def create_model(args):
         model = ofa_flops_595m_s(model_params)
     elif args.model_name == 'resnet50':
         model = timm.create_model('resnet50', pretrained=False, num_classes=args.num_classes)
-    elif args.model_name == 'vit_base_patch16_224': # notice - qkv_bias==False currently
+    elif args.model_name == 'vit_base_patch16_224':  # notice - qkv_bias==False currently
         model_kwargs = dict(
             patch_size=16, embed_dim=768, depth=12, num_heads=12, representation_size=None, qkv_bias=False)
         model = timm.models.vision_transformer._create_vision_transformer('vit_base_patch16_224_in21k',
@@ -47,12 +48,26 @@ def create_model(args):
                                                                           num_classes=args.num_classes, **model_kwargs)
     elif args.model_name == 'mobilenetv3_large_100':
         model = timm.create_model('mobilenetv3_large_100', pretrained=False, num_classes=args.num_classes)
+    elif args.model_name == 'twins-alt_gvt_small':
+        model = timm.create_model('alt_gvt_small',
+                                  pretrained=False,
+                                  num_classes=args.num_classes,
+                                  drop_rate=0.0,
+                                  drop_path_rate=0.1,
+                                  drop_block_rate=None,)
+    elif args.model_name == 'twins-alt_gvt_base':
+        model = timm.create_model('alt_gvt_base',
+                                  pretrained=False,
+                                  num_classes=args.num_classes,
+                                  drop_rate=0.0,
+                                  drop_path_rate=0.3,
+                                  drop_block_rate=None,)
     else:
         print("model: {} not found !!".format(args.model_name))
         exit(-1)
 
-    if args.model_path and args.model_path!='':  # make sure to load pretrained ImageNet-1K model
-        model = load_model_weights(model, args.model_path)
+    # if args.model_path and args.model_path!='':  # make sure to load pretrained ImageNet-1K model
+    #     model = load_model_weights(model, args.model_path)
     print('done\n')
 
     return model
