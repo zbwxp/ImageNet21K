@@ -48,26 +48,35 @@ def create_model(args):
                                                                           num_classes=args.num_classes, **model_kwargs)
     elif args.model_name == 'mobilenetv3_large_100':
         model = timm.create_model('mobilenetv3_large_100', pretrained=False, num_classes=args.num_classes)
-    elif args.model_name == 'twins-alt_gvt_small':
+    elif args.model_name == 'twins_alt_gvt_small':
         model = timm.create_model('alt_gvt_small',
                                   pretrained=False,
                                   num_classes=args.num_classes,
                                   drop_rate=0.0,
                                   drop_path_rate=0.1,
-                                  drop_block_rate=None,)
-    elif args.model_name == 'twins-alt_gvt_base':
+                                  drop_block_rate=None, )
+    elif args.model_name == 'twins_alt_gvt_base':
         model = timm.create_model('alt_gvt_base',
                                   pretrained=False,
                                   num_classes=args.num_classes,
                                   drop_rate=0.0,
                                   drop_path_rate=0.3,
-                                  drop_block_rate=None,)
+                                  drop_block_rate=None, )
+
+    elif args.model_name == 'twins_alt_gvt_large':
+        model = timm.create_model('alt_gvt_large',
+                                  pretrained=False,
+                                  num_classes=args.num_classes,
+                                  drop_rate=0.0,
+                                  drop_path_rate=0.5,
+                                  drop_block_rate=None, )
     else:
         print("model: {} not found !!".format(args.model_name))
         exit(-1)
 
-    # if args.model_path and args.model_path!='':  # make sure to load pretrained ImageNet-1K model
-    #     model = load_model_weights(model, args.model_path)
+    if args.model_path and args.model_path != '':  # make sure to load pretrained ImageNet-1K model
+        model = load_model_weights(model, args.model_path)
+
     print('done\n')
 
     return model
